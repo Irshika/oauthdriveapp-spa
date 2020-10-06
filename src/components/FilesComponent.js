@@ -21,7 +21,24 @@ export default class FilesComponent extends Component {
         }
 
     }
+uploadFile = async (files) => {
+        const data = new FormData()
+        await data.append('file', files[0])
 
+        if (files[0] !== undefined) {
+            await Axios.post(`${common.BACKEND_API}${common.FILE_ENDPOINT}/`,
+                data,
+                {
+                    headers: common.FILE_HEADER_INFO
+                }).then(async (res) => {
+                    notificationAlertUtil.successAlert("File uploaded successfully")
+                    await this.loadFiles();
+                }).catch(error => {
+                    notificationAlertUtil.customErrorAlert("Error occurred during file reading")
+                });
+        }
+
+    }
 
     loadFiles = async () => {
         await Axios.get(`${common.BACKEND_API}${common.FILE_ENDPOINT}/`,
@@ -82,7 +99,7 @@ export default class FilesComponent extends Component {
                                             Read My Drive
                 </MDBBtn>
                                     </div>
-                                    <DropzoneArea
+                                 <DropzoneArea
                                         acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
                                         maxFileSize={5000000}
                                         showAlerts={false}
